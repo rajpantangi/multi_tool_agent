@@ -1,0 +1,3 @@
+google-cloud-aiplatform[agent_engines,adk]
+absl-py
+python-dotenv

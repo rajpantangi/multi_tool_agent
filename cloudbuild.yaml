@@ -33,3 +33,42 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
+
+
+
+
+
+
+steps:
+# Step 1: Install Python dependencies from your requirements.txt file.
+# This ensures your deployment script has all the necessary libraries.
+- name: 'gcr.io/cloud-builders/pip'
+  id: 'Install Dependencies'
+  args: ['install', '-r', 'requirements.txt', '--user']
+
+# Step 2: Run your Python script to deploy the agent to Agent Engine.
+# This step executes the logic you've already written for deployment.
+- name: 'python:3.9' # Use a Python image that matches your environment
+  id: 'Deploy to AgentEngine'
+  entrypoint: 'python'
+  args: ['your_deployment_script.py'] # <-- IMPORTANT: Change to your script's filename
+  # This step implicitly depends on the previous one finishing successfully.
+
+# Step 3: Run your curl command to register the agent in Agent Space.
+# This uses a builder that has curl installed.
+# Note: For production, store sensitive data like tokens in Secret Manager.
+- name: 'gcr.io/cloud-builders/gcurl'
+  id: 'Register in AgentSpace'
+  entrypoint: 'bash'
+  args:
+    - -c
+    - |
+      curl -X POST \
+      -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{"agent_name": "my-cool-agent", "endpoint": "some-endpoint"}' \
+      "https://your-agentspace-api/register" # <-- IMPORTANT: Replace with your actual curl command
+
+# Optional timeout for the entire build
+timeout: '1200s'
