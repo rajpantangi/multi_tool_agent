@@ -1,0 +1,35 @@
+steps:
+  # Step 1: Install dependencies using Poetry
+  # We use a standard python image and install poetry ourselves.
+  - name: 'python:3.12'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        pip install poetry
+        poetry install --with dev
+
+  # Step 2: Run the local evaluation tests using pytest
+  # If this step fails, the build will stop here.
+  - name: 'python:3.12'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        pip install poetry
+        poetry install --with dev
+        poetry run pytest
+
+  # Step 3: Deploy to Vertex AI Agent Engine
+  # This step only runs if the pytest evaluations in the previous step passed.
+  - name: 'python:3.12'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        pip install poetry
+        poetry install --with deployment
+        poetry run python deployment/deploy.py --create
+
+options:
+  logging: CLOUD_LOGGING_ONLY

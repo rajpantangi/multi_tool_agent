@@ -1,0 +1,72 @@
+{
+  "eval_set_id": "d5fcefd6-03a1-42ff-99b8-66edae29f139",
+  "name": "d5fcefd6-03a1-42ff-99b8-66edae29f139",
+  "description": "This is an evaluation set for multi tool agent",
+  "eval_cases": [
+    {
+      "eval_id": "/Users/rajpantangi/Desktop/Agents/multi_tool_agent/eval/multi_tool.test.json",
+      "conversation": [
+        {
+          "invocation_id": "89f3da28-9f25-49a5-8eb6-1367e0c0ea6e",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Get weather and time in new york"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit). The current time in new york is 2025-07-01 10:06:23 EDT-0400."
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_weather"
+              },
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_current_time"
+              }
+            ],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1751425536.62773
+        }
+      ],
+      "session_input": null,
+      "creation_timestamp": 1751425536.6277351
+    }
+  ],
+  "creation_timestamp": 1751425536.627738
+}

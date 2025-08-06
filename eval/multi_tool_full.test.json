@@ -1,0 +1,62 @@
+[
+  {
+    "query": "Get weather in new york",
+    "expected_tool_use": [
+      {
+        "tool_name": "get_weather",
+        "tool_input": {
+          "city": "new york"
+        }
+      }
+    ],
+    "reference": "Placeholder for expected weather response."
+  },
+  {
+    "query": "Get weather and time in new york",
+    "expected_tool_use": [
+      {
+        "tool_name": "get_weather",
+        "tool_input": {
+          "city": "new york"
+        }
+      },
+      {
+        "tool_name": "get_current_time",
+        "tool_input": {
+          "city": "new york"
+        }
+      }
+    ],
+    "reference": "Placeholder for expected weather and time response."
+  },
+  {
+    "query": "Get current time in new york",
+    "expected_tool_use": [
+      {
+        "tool_name": "get_current_time",
+        "tool_input": {
+          "city": "new york"
+        }
+      }
+    ],
+    "reference": "Placeholder for expected time response."
+  },
+  {
+    "query": "Get current time and weather in  new york",
+    "expected_tool_use": [
+      {
+        "tool_name": "get_current_time",
+        "tool_input": {
+          "city": "new york"
+        }
+      },
+      {
+        "tool_name": "get_weather",
+        "tool_input": {
+          "city": "new york"
+        }
+      }
+    ],
+    "reference": "Placeholder for expected time and weather response."
+  }
+]

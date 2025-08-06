@@ -1,0 +1,229 @@
+{
+  "eval_set_id": "88d24518-8118-4853-b7c7-2ec84a5b830e",
+  "name": "88d24518-8118-4853-b7c7-2ec84a5b830e",
+  "description": null,
+  "eval_cases": [
+    {
+      "eval_id": "/Users/rajpantangi/Desktop/Agents/multi_tool_agent/eval/multi_tool_full.test.json",
+      "conversation": [
+        {
+          "invocation_id": "58979211-882b-4450-8dae-22aacf26baba",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Get weather in new york"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit)."
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_weather"
+              }
+            ],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1751465579.496515
+        },
+        {
+          "invocation_id": "d45d52f6-e640-4231-8ba5-40852589cffb",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Get weather and time in new york"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit). The current time in new york is 2025-07-01 10:06:23 EDT-0400."
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_weather"
+              },
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_current_time"
+              }
+            ],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1751465579.496535
+        },
+        {
+          "invocation_id": "1627eb59-4b14-400b-82a8-cd55f6a1d3e8",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Get current time in new york"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "The current time in new york is 2025-07-01 10:06:23 EDT-0400."
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_current_time"
+              }
+            ],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1751465579.496547
+        },
+        {
+          "invocation_id": "5813e04a-5f15-47d8-90a1-06309ee8ca1f",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Get current time and weather in  new york"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "The current time in new york is 2025-07-01 10:06:23 EDT-0400. The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit)."
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_current_time"
+              },
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_weather"
+              }
+            ],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1751465579.4965582
+        }
+      ],
+      "session_input": null,
+      "creation_timestamp": 1751465579.49656
+    }
+  ],
+  "creation_timestamp": 1751465579.496564
+}

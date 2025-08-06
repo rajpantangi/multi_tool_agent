@@ -1,0 +1,20 @@
+[
+  {
+    "query": "Get weather and time in new york",
+    "expected_tool_use": [
+      {
+        "tool_name": "get_weather",
+        "tool_input": {
+          "city": "new york"
+        }
+      },
+      {
+        "tool_name": "get_current_time",
+        "tool_input": {
+          "city": "new york"
+        }
+      }
+    ],
+    "reference": "The weather in New York is sunny with a temperature of 25 degrees Celsius (77 degrees Fahrenheit). The current time in new york is 2025-07-01 10:06:23 EDT-0400."
+  }
+]
