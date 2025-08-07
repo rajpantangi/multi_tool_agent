@@ -53,11 +53,11 @@ steps:
             "tool_description": "Use this tool to get information on weather and time of a particular city"
           },
           "provisioned_reasoning_engine": {
-            "reasoning_engine": "'$REASONING_ENGINE_ID'"
+            "reasoning_engine": "'$$REASONING_ENGINE_ID'"
           }
         }
       }' \
-      "https://discoveryengine.googleapis.com/v1alpha/projects/gcp-basic-371423/locations/global/collections/default_collection/engines/$APP_ID/assistants/default_assistant/agents"
+      "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines/$APP_ID/assistants/default_assistant/agents"
 
 # Optional: Set a timeout for the entire build process.
 timeout: '1200s'
