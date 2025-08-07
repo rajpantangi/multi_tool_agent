@@ -1,11 +1,12 @@
 steps:
 # Step 1: Install Python dependencies from your requirements.txt file.
-- name: 'gcr.io/cloud-builders/pip'
+- name: 'python:3.13.3-slim'
   id: 'Install Dependencies'
+  entrypoint: 'pip'
   args: ['install', '-r', 'requirements.txt', '--user']
 
 # Step 2: Run your Python script to deploy the agent to Agent Engine and capture the output.
-- name: 'python:3.9'
+- name: 'python:3.13.3-slim'
   id: 'Deploy to AgentEngine'
   entrypoint: 'bash'
   args:
