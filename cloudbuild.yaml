@@ -32,7 +32,7 @@ steps:
       APP_ID="agentspace-de-agent-testin_1747856989394"
 
       # A safety check to ensure the ID was actually captured.
-      if [ -z "$REASONING_ENGINE_ID" ]; then
+      if [ -z "$$REASONING_ENGINE_ID" ]; then
         echo "ERROR: Reasoning Engine ID could not be found!"
         exit 1
       fi
