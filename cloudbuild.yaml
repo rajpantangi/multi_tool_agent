@@ -57,7 +57,7 @@ steps:
           }
         }
       }' \
-      "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines/$APP_ID/assistants/default_assistant/agents"
+      "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines/$$APP_ID/assistants/default_assistant/agents"
 
 # Optional: Set a timeout for the entire build process.
 timeout: '1200s'
