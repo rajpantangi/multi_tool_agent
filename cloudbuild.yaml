@@ -32,7 +32,7 @@ steps:
       REASONING_ENGINE_ID=$(cat /workspace/reasoning_engine_id.txt)
 
       # A safety check to ensure the ID was actually captured.
-      if [ -z "$REASONING_ENGINE_ID" ]; then
+      if [ -z "$$REASONING_ENGINE_ID" ]; then
         echo "ERROR: Reasoning Engine ID could not be found!"
         exit 1
       fi
@@ -55,8 +55,8 @@ steps:
       -H "Authorization: Bearer $(gcloud auth print-access-token)" \
       -H "Content-Type: application/json" \
       -H "X-Goog-User-Project: $PROJECT_ID" \
-      -d "$JSON_PAYLOAD" \
-      "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines/$APP_ID/assistants/default_assistant/agents"
+      -d "$$JSON_PAYLOAD" \
+      "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines/$$APP_ID/assistants/default_assistant/agents"
 
 # Optional: Set a timeout for the entire build process.
 timeout: '1200s'
