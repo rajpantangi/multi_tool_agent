@@ -17,6 +17,8 @@
 
 import asyncio
 import os
+import random
+import string
 
 from absl import app, flags
 from dotenv import load_dotenv
@@ -50,6 +52,11 @@ flags.DEFINE_bool("delete", False, "Deletes an existing deployment.")
 flags.mark_bool_flags_as_mutual_exclusive(["create", "delete", "quicktest"])
 
 
+def get_random_id(length: int = 3) -> str:
+    """Generate a random id of a specified length."""
+    return "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
+
+
 def create(env_vars: dict[str, str]) -> None:
     """Creates a new deployment."""
     print(env_vars)
@@ -63,7 +70,7 @@ def create(env_vars: dict[str, str]) -> None:
 
     remote_agent = agent_engines.create(
         app,
-        display_name="Multi-Agent-ADK-AutomatedDeployment",
+        display_name=f"Multi-Agent-ADK-AutomatedDeployment-{get_random_id()}",
         description="AgentEngine Deployment",
         requirements=[
             "google-cloud-aiplatform[agent_engines,adk]",
