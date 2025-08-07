@@ -15,7 +15,7 @@ steps:
       set -eo pipefail
       python deploy.py --create \
         --project_id="$PROJECT_ID" \
-        --location="$LOCATION" \
+        --location="us-central1" \
         --bucket="gcp-basic-371423-vertex-staging" \
       2>&1 | tee /dev/stderr | \
       grep 'Created remote agent:' | \
