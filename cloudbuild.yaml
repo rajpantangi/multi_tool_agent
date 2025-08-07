@@ -22,7 +22,7 @@ steps:
       awk '{print $4}' > /workspace/reasoning_engine_id.txt
 
 # Step 2: Read the ID from the file and use it to register the agent in Agent Space.
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+- name: 'gcr.io/google.com/cloudsdk/google-cloud-sdk:slim'
   id: 'Register in AgentSpace'
   entrypoint: 'bash'
   args:
@@ -30,6 +30,7 @@ steps:
     - |
       set -eo pipefail
       REASONING_ENGINE_ID=$(cat /workspace/reasoning_engine_id.txt)
+      APP_ID="agentspace-de-agent-testin_1747856989394"
 
       # A safety check to ensure the ID was actually captured.
       if [ -z "$$REASONING_ENGINE_ID" ]; then
@@ -37,25 +38,26 @@ steps:
         exit 1
       fi
 
-      APP_ID="agentspace-de-agent-testin_1747856989394"
-
-      # Use printf to safely create the JSON payload with the variable.
-      JSON_PAYLOAD=$(printf '{
-        "displayName": "tool_agent",
-        "description": "Auto agent deployment via cloud build",
-        "icon": { "uri": "https://www.gstatic.com/marketing-cms/assets/images/3d/24/88d3db994ac296ff541ca1b31674/google-health-studies.webp=s96-fcrop64=1,00000000ffffffff-rw" },
-        "adk_agent_definition": {
-          "tool_settings": { "tool_description": "Use this tool to get information on weather and time of a particular city" },
-          "provisioned_reasoning_engine": { "reasoning_engine": "%s" }
-        }
-      }' "$REASONING_ENGINE_ID")
-
-      # Execute the curl command with the JSON payload.
+      # Execute the curl command, substituting the shell variable into the JSON payload.
       curl -X POST \
       -H "Authorization: Bearer $(gcloud auth print-access-token)" \
       -H "Content-Type: application/json" \
       -H "X-Goog-User-Project: $PROJECT_ID" \
-      -d "$$JSON_PAYLOAD" \
+      -d '{
+        "displayName": "Multi_tool_agent",
+        "description": "Test deploying agent",
+        "icon": {
+          "uri": "https://www.gstatic.com/marketing-cms/assets/images/3d/24/88d3db994ac296ff541ca1b31674/google-health-studies.webp=s96-fcrop64=1,00000000ffffffff-rw"
+        },
+        "adk_agent_definition": {
+          "tool_settings": {
+            "tool_description": "Use this tool to get information on weather and time of a particular city"
+          },
+          "provisioned_reasoning_engine": {
+            "reasoning_engine": "'$$REASONING_ENGINE_ID'"
+          }
+        }
+      }' \
       "https://discoveryengine.googleapis.com/v1alpha/projects/$PROJECT_ID/locations/global/collections/default_collection/engines/$$APP_ID/assistants/default_assistant/agents"
 
 # Optional: Set a timeout for the entire build process.
