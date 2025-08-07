@@ -22,7 +22,7 @@ steps:
       awk '{print $4}' > /workspace/reasoning_engine_id.txt
 
 # Step 3: Read the ID from the file and use it to register the agent in Agent Space.
-- name: 'gcr.io/cloud-builders/gcurl'
+- name: 'gcr.io/google.com/cloudsdk/google-cloud-sdk:slim'
   id: 'Register in AgentSpace'
   entrypoint: 'bash'
   args:
