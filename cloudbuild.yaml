@@ -1,74 +1,63 @@
 steps:
-  # Step 1: Install dependencies using Poetry
-  # We use a standard python image and install poetry ourselves.
-  - name: 'python:3.12'
-    entrypoint: 'bash'
-    args:
-      - -c
-      - |
-        pip install poetry
-        poetry install --with dev
-
-  # Step 2: Run the local evaluation tests using pytest
-  # If this step fails, the build will stop here.
-  - name: 'python:3.12'
-    entrypoint: 'bash'
-    args:
-      - -c
-      - |
-        pip install poetry
-        poetry install --with dev
-        poetry run pytest
-
-  # Step 3: Deploy to Vertex AI Agent Engine
-  # This step only runs if the pytest evaluations in the previous step passed.
-  - name: 'python:3.12'
-    entrypoint: 'bash'
-    args:
-      - -c
-      - |
-        pip install poetry
-        poetry install --with deployment
-        poetry run python deployment/deploy.py --create
-
-options:
-  logging: CLOUD_LOGGING_ONLY
-
-
-
-
-
-
-
-steps:
 # Step 1: Install Python dependencies from your requirements.txt file.
-# This ensures your deployment script has all the necessary libraries.
 - name: 'gcr.io/cloud-builders/pip'
   id: 'Install Dependencies'
   args: ['install', '-r', 'requirements.txt', '--user']
 
-# Step 2: Run your Python script to deploy the agent to Agent Engine.
-# This step executes the logic you've already written for deployment.
-- name: 'python:3.9' # Use a Python image that matches your environment
+# Step 2: Run your Python script to deploy the agent to Agent Engine and capture the output.
+- name: 'python:3.9'
   id: 'Deploy to AgentEngine'
-  entrypoint: 'python'
-  args: ['your_deployment_script.py'] # <-- IMPORTANT: Change to your script's filename
-  # This step implicitly depends on the previous one finishing successfully.
+  entrypoint: 'bash'
+  args:
+    - -c
+    - |
+      # Pass the project, location, and bucket as flags using Cloud Build substitutions
+      python deploy.py --create \
+        --project_id="$PROJECT_ID" \
+        --location="$LOCATION" \
+        --bucket="gcp-basic-371423-vertex-staging" \
+      2>&1 | \
+      grep 'Created remote agent:' | \
+      awk '{print $4}' > /workspace/reasoning_engine_id.txt
 
-# Step 3: Run your curl command to register the agent in Agent Space.
-# This uses a builder that has curl installed.
-# Note: For production, store sensitive data like tokens in Secret Manager.
+# Step 3: Read the ID from the file and use it to register the agent in Agent Space.
 - name: 'gcr.io/cloud-builders/gcurl'
   id: 'Register in AgentSpace'
   entrypoint: 'bash'
   args:
     - -c
     - |
-      curl -X POST \
-      -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
-      -H "Content-Type: application/json" \
-      -d '{"agent_name": "my-cool-agent", "endpoint": "some-endpoint"}' \
-      "https://your-agentspace-api/register" # <-- IMPORTANT: Replace with your actual curl command
+      # Read the resource ID from the file into a shell variable.
+      REASONING_ENGINE_ID=$(cat /workspace/reasoning_engine_id.txt)
+      APP_ID="agentspace-de-agent-testin_1747856989394"
 
-# Optional timeout for the entire build
+      # A safety check to ensure the ID was actually captured.
+      if [ -z "$REASONING_ENGINE_ID" ]; then
+        echo "ERROR: Reasoning Engine ID could not be found!"
+        exit 1
+      fi
+
+      # Execute the curl command, substituting the shell variable into the JSON payload.
+      curl -X POST \
+      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+      -H "Content-Type: application/json" \
+      -H "X-Goog-User-Project: $PROJECT_ID" \
+      -d '{
+        "displayName": "Multi_tool_agent",
+        "description": "Test deploying agent",
+        "icon": {
+          "uri": "https://www.gstatic.com/marketing-cms/assets/images/3d/24/88d3db994ac296ff541ca1b31674/google-health-studies.webp=s96-fcrop64=1,00000000ffffffff-rw"
+        },
+        "adk_agent_definition": {
+          "tool_settings": {
+            "tool_description": "Use this tool to get information on weather and time of a particular city"
+          },
+          "provisioned_reasoning_engine": {
+            "reasoning_engine": "'$REASONING_ENGINE_ID'"
+          }
+        }
+      }' \
+      "https://discoveryengine.googleapis.com/v1alpha/projects/gcp-basic-371423/locations/global/collections/default_collection/engines/$APP_ID/assistants/default_assistant/agents"
+
+# Optional: Set a timeout for the entire build process.
 timeout: '1200s'

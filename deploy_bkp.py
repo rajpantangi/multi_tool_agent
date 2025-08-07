@@ -1,6 +1,3 @@
-# In your deploy.py file
-
-
 # Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -104,35 +101,44 @@ def send_message(
 
 def main(argv: list[str]) -> None:
 
-    # load_dotenv() is no longer needed in the Cloud Build environment
-    # You can keep it for local testing if you like.
+    load_dotenv()
+    env_vars = {}
 
-    # The flags will be provided directly by the Cloud Build step
-    project_id = FLAGS.project_id
-    location = FLAGS.location
-    bucket = FLAGS.bucket
-
-    # A more direct check for required flags
-    if not all([project_id, location, bucket]):
-        print("Error: --project_id, --location, and --bucket are all required flags.")
-        return
+    project_id = (
+        FLAGS.project_id if FLAGS.project_id else os.getenv("GOOGLE_CLOUD_PROJECT")
+    )
+    location = FLAGS.location if FLAGS.location else os.getenv("GOOGLE_CLOUD_LOCATION")
+    bucket = FLAGS.bucket if FLAGS.bucket else os.getenv("GOOGLE_CLOUD_STORAGE_BUCKET")
+    # Variables for Travel Concierge from .env
+    initial_states_path = FLAGS.initial_states_path
 
     print(f"PROJECT: {project_id}")
     print(f"LOCATION: {location}")
     print(f"BUCKET: {bucket}")
+    print(f"INITIAL_STATE: {initial_states_path}")
+
+    env_vars = {
+        "GOOGLE_GENAI_USE_VERTEXAI": os.getenv("GOOGLE_GENAI_USE_VERTEXAI", "TRUE"),
+        "GOOGLE_CLOUD_PROJECT": project_id,
+        "GOOGLE_CLOUD_LOCATION": location,
+        "GOOGLE_CLOUD_STORAGE_BUCKET": bucket 
+    }
+
+    if not project_id:
+        print("Missing required environment variable: GOOGLE_CLOUD_PROJECT")
+        return
+    elif not location:
+        print("Missing required environment variable: GOOGLE_CLOUD_LOCATION")
+        return
+    elif not bucket:
+        print("Missing required environment variable: GOOGLE_CLOUD_STORAGE_BUCKET")
+        return
 
     vertexai.init(
         project=project_id,
         location=location,
         staging_bucket=f"gs://{bucket}",
     )
-
-    env_vars = {
-        "GOOGLE_GENAI_USE_VERTEXAI": "TRUE",
-        "GOOGLE_CLOUD_PROJECT": project_id,
-        "GOOGLE_CLOUD_LOCATION": location,
-        "GOOGLE_CLOUD_STORAGE_BUCKET": bucket
-    }
 
     if FLAGS.create:
         create(env_vars)
@@ -153,7 +159,6 @@ def main(argv: list[str]) -> None:
         )
     else:
         print("Unknown command")
-
 
 
 if __name__ == "__main__":
