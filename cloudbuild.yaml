@@ -12,7 +12,6 @@ steps:
   args:
     - -c
     - |
-      # Pass the project, location, and bucket as flags using Cloud Build substitutions
       python deploy.py --create \
         --project_id="$PROJECT_ID" \
         --location="us-central1" \

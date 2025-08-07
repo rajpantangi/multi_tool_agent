@@ -63,7 +63,7 @@ def create(env_vars: dict[str, str]) -> None:
 
     remote_agent = agent_engines.create(
         app,
-        display_name="Multi-Agent-ADK-new",
+        display_name="Multi-Agent-ADK-AutomatedDeployment",
         description="AgentEngine Deployment",
         requirements=[
             "google-cloud-aiplatform[agent_engines,adk]",
