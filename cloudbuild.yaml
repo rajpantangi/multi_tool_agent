@@ -15,7 +15,7 @@ steps:
       # Pass the project, location, and bucket as flags using Cloud Build substitutions
       python deploy.py --create \
         --project_id="$PROJECT_ID" \
-        --location="$LOCATION" \
+        --location="us-central1" \
         --bucket="gcp-basic-371423-vertex-staging" \
       2>&1 | \
       grep 'Created remote agent:' | \
