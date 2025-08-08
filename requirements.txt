@@ -3,3 +3,4 @@ absl-py
 python-dotenv
 pytest
 pytest-asyncio
+rouge-score
