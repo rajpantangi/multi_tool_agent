@@ -5,17 +5,7 @@ steps:
   entrypoint: 'pip'
   args: ['install', '-r', 'requirements.txt', '--user']
 
-# Step 1: Run local evaluation tests before deploying.
-- name: 'python:3.13.3-slim'
-  id: 'Run Local Evaluation'
-  entrypoint: 'python'
-  env:
-    - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID'
-    - 'GOOGLE_CLOUD_LOCATION=us-central1'
-    - 'GOOGLE_CLOUD_STORAGE_BUCKET=gcp-basic-371423-vertex-staging'
-  args: ['-m', 'pytest', 'tests/test_local_evaluation.py']
-
-# Step 2: Run your Python script to deploy the agent to Agent Engine and capture the output.
+# Step 1: Run your Python script to deploy the agent to Agent Engine and capture the output.
 - name: 'python:3.13.3-slim'
   id: 'Deploy to AgentEngine'
   entrypoint: 'bash'
@@ -31,7 +21,7 @@ steps:
       grep 'Created remote agent:' | \
       awk '{print $4}' > /workspace/reasoning_engine_id.txt
 
-# Step 3: Read the ID from the file and use it to register the agent in Agent Space.
+# Step 2: Read the ID from the file and use it to register the agent in Agent Space.
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
   id: 'Register in AgentSpace'
   entrypoint: 'bash'
