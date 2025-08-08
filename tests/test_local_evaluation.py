@@ -11,7 +11,7 @@ async def test_multi_tool_agent_evaluation(setup_environment):
     """
     # In the Cloud Build environment, the workspace root is the project directory.
     # The agent is defined in `agent.py`, so the module name is "agent".
-    agent_module = "agent"
+    agent_module = "workspace"
     eval_dataset_path = "eval/multi_tool_full_evalset.test.json"
 
     print(f"\nStarting local evaluation for agent: {agent_module}")
