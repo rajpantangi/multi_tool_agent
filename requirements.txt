@@ -4,3 +4,4 @@ python-dotenv
 pytest
 pytest-asyncio
 rouge-score
+google-adk[eval]
