@@ -9,7 +9,9 @@ async def test_multi_tool_agent_evaluation(setup_environment):
     """
     Tests the multi_tool_agent's basic ability via a local evaluation.
     """
-    agent_module = "multi_tool_agent"
+    # In the Cloud Build environment, the workspace root is the project directory.
+    # The agent is defined in `agent.py`, so the module name is "agent".
+    agent_module = "agent"
     eval_dataset_path = "eval/multi_tool_full_evalset.test.json"
 
     print(f"\nStarting local evaluation for agent: {agent_module}")
