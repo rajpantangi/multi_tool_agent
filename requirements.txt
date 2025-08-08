@@ -1,4 +1,4 @@
-google-cloud-aiplatform[agent_engines,adk]
+google-cloud-aiplatform[agent_engines,adk,eval]
 absl-py
 python-dotenv
 pytest
