@@ -21,13 +21,19 @@ import os
 import vertexai
 from vertexai import agent_engines
 from vertexai.preview import reasoning_engines
+from google.cloud.aiplatform import initializer
 
 
-PROJECT_ID = "gcp-basic-371423"  # @param {type: "string", placeholder: "[your-project-id]", isTemplate: true}
+# Read configuration from environment variables for CI/CD compatibility
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT")
+LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+BUCKET_NAME = os.environ.get("GOOGLE_CLOUD_STORAGE_BUCKET")
 
-LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "us-central1")
-
-BUCKET_NAME = "adk_sample_deployment_muti_agent"  # @param {type: "string", placeholder: "[your-bucket-name]", isTemplate: true}
+if not all([PROJECT_ID, LOCATION, BUCKET_NAME]):
+    raise ValueError(
+        "Missing required environment variables: "
+        "GOOGLE_CLOUD_PROJECT, GOOGLE_CLOUD_LOCATION, GOOGLE_CLOUD_STORAGE_BUCKET"
+    )
 
 BUCKET_URI = f"gs://{BUCKET_NAME}"
 
@@ -172,8 +178,12 @@ eval_sample_dataset = pd.DataFrame(eval_data1)
 
 ## Calling the deployed agent
 
-RESOURCE_ID = "projects/131050838151/locations/us-central1/reasoningEngines/16228791625973760"  # @param {type: "string"}
+RESOURCE_ID = os.environ.get("REASONING_ENGINE_ID")
+if not RESOURCE_ID:
+    raise ValueError("REASONING_ENGINE_ID environment variable not set.")
+
 remote_agent_for_query = agent_engines.get(RESOURCE_ID)
+
 #print (remote_agent_for_query)
 
 '''
@@ -244,8 +254,8 @@ def run_ga_agent(prompt: str) -> dict:
 
 trajectory_metrics = [
     "trajectory_exact_match",
-   # "trajectory_precision",
-   # "trajectory_recall",
+    "trajectory_precision",
+    "trajectory_recall",
 ]
 
 single_tool_usage_metrics = [TrajectorySingleToolUse(tool_name="get_weather")]
@@ -265,7 +275,7 @@ single_tool_eval_task = EvalTask(
     experiment=EXPERIMENT_RUN_SINGLE_TOOL_METRICS,
 )
 
-eval_result = single_tool_eval_task.evaluate(
+eval_result = trajectory_eval_task.evaluate(
     runnable=run_ga_agent, experiment_run_name=EXPERIMENT_RUN_SINGLE_TOOL_METRICS
 )
 

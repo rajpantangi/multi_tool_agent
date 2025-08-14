@@ -31,7 +31,28 @@ steps:
       grep 'Created remote agent:' | \
       awk '{print $4}' > /workspace/reasoning_engine_id.txt
 
-# Step 3: Read the ID from the file and use it to register the agent in Agent Space.
+
+# Step 3: Run post-deployment evaluation on the live agent.
+- name: 'python:3.13.3-slim'
+  id: 'Post Deploy Evaluation'
+  entrypoint: 'bash'
+  env:
+    - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID'
+    - 'GOOGLE_CLOUD_LOCATION=us-central1'
+    - 'GOOGLE_CLOUD_STORAGE_BUCKET=gcp-basic-371423-vertex-staging'
+  args:
+    - -c
+    - |
+      set -eo pipefail
+      export REASONING_ENGINE_ID=$(cat /workspace/reasoning_engine_id.txt)
+      if [ -z "$REASONING_ENGINE_ID" ]; then
+        echo "ERROR: Reasoning Engine ID could not be found for post-deploy evaluation!"
+        exit 1
+      fi
+      echo "Running post-deployment evaluation on agent: $REASONING_ENGINE_ID"
+      python PostDeployEvaluation.py
+
+# Step 4: Read the ID from the file and use it to register the agent in Agent Space.
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
   id: 'Register in AgentSpace'
   entrypoint: 'bash'
@@ -55,7 +76,7 @@ steps:
       -H "X-Goog-User-Project: $PROJECT_ID" \
       -d '{
         "displayName": "WeatherTimeAgent-latest",
-        "description": "Agent deployed through AgentOps pipeline",
+        "description": "Latest Release including post deployment evaluation",
         "icon": {
           "uri": "https://www.gstatic.com/marketing-cms/assets/images/3d/24/88d3db994ac296ff541ca1b31674/google-health-studies.webp=s96-fcrop64=1,00000000ffffffff-rw"
         },
