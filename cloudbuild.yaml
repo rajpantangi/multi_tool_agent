@@ -45,11 +45,11 @@ steps:
     - |
       set -eo pipefail
       export REASONING_ENGINE_ID=$(cat /workspace/reasoning_engine_id.txt)
-      if [ -z "$REASONING_ENGINE_ID" ]; then
+      if [ -z "$$REASONING_ENGINE_ID" ]; then
         echo "ERROR: Reasoning Engine ID could not be found for post-deploy evaluation!"
         exit 1
       fi
-      echo "Running post-deployment evaluation on agent: $REASONING_ENGINE_ID"
+      echo "Running post-deployment evaluation on agent: $$REASONING_ENGINE_ID"
       python PostDeployEvaluation.py
 
 # Step 4: Read the ID from the file and use it to register the agent in Agent Space.
