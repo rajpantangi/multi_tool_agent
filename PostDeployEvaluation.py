@@ -1,6 +1,7 @@
 
 import random
 import string
+import json
 # from IPython.display import HTML, Markdown, display # Commented out for terminal use
 import pandas as pd
 
@@ -21,6 +22,7 @@ import os
 import vertexai
 from vertexai import agent_engines
 from vertexai.preview import reasoning_engines
+from google.cloud import bigquery, exceptions
 from google.cloud.aiplatform import initializer
 
 
@@ -109,6 +111,64 @@ def display_eval_report(eval_result: pd.DataFrame) -> None:
     #row_wise_metrics_df = pd.DataFrame.from_dict(eval_result.metrics_table, orient="index").T
     print(eval_result.metrics_table.to_string())
 
+
+def write_to_bigquery(eval_result: pd.DataFrame, project_id: str, experiment_run_name: str):
+    """Writes evaluation results to BigQuery tables."""
+
+    # Get BQ dataset and table names from environment variables, with defaults
+    dataset_name = os.environ.get("BQ_EVAL_DATASET", "agent_evaluations")
+    summary_table_name = os.environ.get("BQ_SUMMARY_TABLE", "eval_summary_metrics")
+    row_wise_table_name = os.environ.get("BQ_ROW_WISE_TABLE", "eval_row_wise_metrics")
+
+    try:
+        client = bigquery.Client(project=project_id)
+
+        # --- Prepare and write summary metrics ---
+        summary_df = pd.DataFrame.from_dict(eval_result.summary_metrics, orient="index").T
+
+        # Clean up column names for BigQuery (replace / with _)
+        summary_df.columns = summary_df.columns.str.replace('/', '_', regex=False)
+
+        # Add metadata
+        summary_df['run_timestamp'] = pd.Timestamp.now(tz='UTC')
+        summary_df['experiment_run_name'] = experiment_run_name
+
+        summary_table_id = f"{project_id}.{dataset_name}.{summary_table_name}"
+        print(f"Writing summary metrics to {summary_table_id}...")
+
+        # Ensure dataset exists
+        try:
+            client.get_dataset(f"{project_id}.{dataset_name}")
+        except exceptions.NotFound:
+            print(f"Dataset {dataset_name} not found. Creating it.")
+            dataset = bigquery.Dataset(f"{project_id}.{dataset_name}")
+            dataset.location = LOCATION # Use location from top of script
+            client.create_dataset(dataset, timeout=30)
+
+        # For simplicity, we use autodetect. For production, it's better to create
+        # the tables beforehand with the DDL provided.
+        job_config = bigquery.LoadJobConfig(write_disposition="WRITE_APPEND", autodetect=True)
+
+        client.load_table_from_dataframe(summary_df, summary_table_id, job_config=job_config).result()
+        print("Successfully wrote summary metrics to BigQuery.")
+
+        # --- Prepare and write row-wise metrics ---
+        row_wise_df = eval_result.metrics_table.copy()
+        row_wise_df.columns = row_wise_df.columns.str.replace('/', '_', regex=False)
+
+        # Convert list/dict columns to JSON strings for BQ
+        for col in ['reference_trajectory', 'predicted_trajectory']:
+            if col in row_wise_df.columns:
+                row_wise_df[col] = row_wise_df[col].apply(json.dumps)
+
+        row_wise_df['run_timestamp'] = pd.Timestamp.now(tz='UTC')
+        row_wise_df['experiment_run_name'] = experiment_run_name
+        row_wise_table_id = f"{project_id}.{dataset_name}.{row_wise_table_name}"
+        print(f"Writing row-wise metrics to {row_wise_table_id}...")
+        client.load_table_from_dataframe(row_wise_df, row_wise_table_id, job_config=job_config).result()
+        print("Successfully wrote row-wise metrics to BigQuery.")
+    except Exception as e:
+        print(f"Warning: Could not write to BigQuery. Error: {e}")
 
 eval_data = {
     "prompt": [
@@ -280,3 +340,5 @@ eval_result = trajectory_eval_task.evaluate(
 )
 
 display_eval_report(eval_result)
+
+write_to_bigquery(eval_result, PROJECT_ID, EXPERIMENT_RUN_SINGLE_TOOL_METRICS)

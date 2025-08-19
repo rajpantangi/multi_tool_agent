@@ -5,3 +5,4 @@ pytest
 pytest-asyncio
 rouge-score
 google-adk[eval]
+google-cloud-bigquery
