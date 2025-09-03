@@ -54,6 +54,34 @@ def get_current_time(city: str) -> dict:
     )
     return {"status": "success", "report": report}
 
+def get_city_info(city: str) -> dict:
+    """
+    Retrieves the current time and weather report for a specified city.
+
+    Args:
+        city (str): The name of the city for which to retrieve the information.
+
+    Returns:
+        dict: A dictionary containing the time and weather for the city.
+    """
+    # Call your existing functions to get the data
+    time_result = get_current_time(city)
+    weather_result = get_weather(city)
+
+    # Combine the results into a single report
+    report = {}
+    if time_result.get("status") == "success":
+        report["time"] = time_result.get("report")
+    if weather_result.get("status") == "success":
+        report["weather"] = weather_result.get("report")
+
+    if not report:
+        return {
+            "status": "error",
+            "error_message": f"Could not retrieve any information for {city}."
+        }
+
+    return {"status": "success", "report": report}
 
 # A specialized sub-agent for handling weather and time tools.
 weather_time_sub_agent = Agent(
@@ -67,7 +95,8 @@ weather_time_sub_agent = Agent(
         "You are a helpful agent that answers user questions about the time and"
         " weather in a city using your tools."
     ),
-    tools=[get_weather, get_current_time],
+    # Use only the single, combined tool
+    tools=[get_city_info],
 )
 
 # The root agent acts as a coordinator. It uses Google Search for general
