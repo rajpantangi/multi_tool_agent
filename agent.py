@@ -58,7 +58,7 @@ def get_current_time(city: str) -> dict:
 # A specialized sub-agent for handling weather and time tools.
 weather_time_sub_agent = Agent(
     name="weather_time_sub_agent",
-    model="gemini-1.5-flash-001",
+    model="gemini-2.0-flash",
     description=(
         "A specialized agent that can get the current weather and time for a"
         " specific city."
@@ -74,7 +74,7 @@ weather_time_sub_agent = Agent(
 # questions and delegates weather/time questions to its sub-agent.
 root_agent = Agent(
     name="coordinator_agent",
-    model="gemini-1.5-flash-001",
+    model="gemini-2.0-flash",
     description=(
         "A coordinator agent that can perform Google searches for general"
         " information and delegate tasks about weather and time to a specialized"
