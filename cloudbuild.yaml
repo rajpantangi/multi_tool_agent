@@ -75,8 +75,8 @@ steps:
       -H "Content-Type: application/json" \
       -H "X-Goog-User-Project: $PROJECT_ID" \
       -d '{
-        "displayName": "Custom Agent",
-        "description": "Agent to get time and weather of a city",
+        "displayName": "Custom Agent - Google Search",
+        "description": "Agent to get time and weather of a city and general searches",
         "icon": {
           "uri": "https://www.gstatic.com/marketing-cms/assets/images/3d/24/88d3db994ac296ff541ca1b31674/google-health-studies.webp=s96-fcrop64=1,00000000ffffffff-rw"
         },

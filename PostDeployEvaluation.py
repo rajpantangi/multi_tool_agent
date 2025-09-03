@@ -176,6 +176,8 @@ eval_data = {
         "Get weather and time in new york",
         "Get current time in new york",
         "Get current time and weather in  new york",
+        "What is the tallest building in the world?",
+        "Who was the first person to walk on the moon?",
     ],
     "reference_trajectory": [
         [
@@ -208,6 +210,18 @@ eval_data = {
             {
                 "tool_name": "get_weather",
                 "tool_input": {"city": "new york"},
+            }
+        ],
+        [
+            {
+                "tool_name": "google_search_tool",
+                "tool_input": {"query": "tallest building in the world"},
+            }
+        ],
+        [
+            {
+                "tool_name": "google_search_tool",
+                "tool_input": {"query": "first person to walk on the moon"},
             }
         ],
        
