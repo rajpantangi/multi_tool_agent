@@ -49,7 +49,7 @@
                 "args": {
                   "city": "new york"
                 },
-                "name": "get_city_info"
+                "name": "get_weather"
               }
             ],
             "intermediate_responses": []
@@ -99,7 +99,14 @@
                 "args": {
                   "city": "new york"
                 },
-                "name": "get_city_info"
+                "name": "get_weather"
+              },
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_current_time"
               }
             ],
             "intermediate_responses": []
@@ -149,7 +156,7 @@
                 "args": {
                   "city": "new york"
                 },
-                "name": "get_city_info"
+                "name": "get_current_time"
               }
             ],
             "intermediate_responses": []
@@ -199,7 +206,14 @@
                 "args": {
                   "city": "new york"
                 },
-                "name": "get_city_info"
+                "name": "get_current_time"
+              },
+              {
+                "id": null,
+                "args": {
+                  "city": "new york"
+                },
+                "name": "get_weather"
               }
             ],
             "intermediate_responses": []

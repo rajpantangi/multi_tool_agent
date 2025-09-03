@@ -1,7 +1,6 @@
 import datetime
 from zoneinfo import ZoneInfo
 from google.adk.agents import Agent # type: ignore
-from google.adk.tools import google_search
 
 def get_weather(city: str) -> dict:
     """Retrieves the current weather report for a specified city.
@@ -54,67 +53,16 @@ def get_current_time(city: str) -> dict:
     )
     return {"status": "success", "report": report}
 
-def get_city_info(city: str) -> dict:
-    """
-    Retrieves the current time and weather report for a specified city.
 
-    Args:
-        city (str): The name of the city for which to retrieve the information.
-
-    Returns:
-        dict: A dictionary containing the time and weather for the city.
-    """
-    # Call your existing functions to get the data
-    time_result = get_current_time(city)
-    weather_result = get_weather(city)
-
-    # Combine the results into a single report
-    report = {}
-    if time_result.get("status") == "success":
-        report["time"] = time_result.get("report")
-    if weather_result.get("status") == "success":
-        report["weather"] = weather_result.get("report")
-
-    if not report:
-        return {
-            "status": "error",
-            "error_message": f"Could not retrieve any information for {city}."
-        }
-
-    return {"status": "success", "report": report}
-
-# A specialized sub-agent for handling weather and time tools.
-weather_time_sub_agent = Agent(
-    name="weather_time_sub_agent",
-    model="gemini-2.0-flash",
-    description=(
-        "A specialized agent that can get the current weather and time for a"
-        " specific city."
-    ),
-    instruction=(
-        "You are a helpful agent that answers user questions about the time and"
-        " weather in a city using your tools."
-    ),
-    # Use only the single, combined tool
-    tools=[get_city_info],
-)
-
-# The root agent acts as a coordinator. It uses Google Search for general
-# questions and delegates weather/time questions to its sub-agent.
 root_agent = Agent(
-    name="coordinator_agent",
+    name="weather_time_agent",
     model="gemini-2.0-flash",
     description=(
-        "A coordinator agent that can perform Google searches for general"
-        " information and delegate tasks about weather and time to a specialized"
-        " sub-agent."
+        "Agent to answer questions about the time and weather in a city."
     ),
     instruction=(
-        "You are a helpful coordinator agent. Your primary role is to route user"
-        " requests. If the user asks a general knowledge question, use the"
-        " google_search tool. If the user asks about the weather or time in a"
-        " city, you MUST delegate the task to the `weather_time_sub_agent`."
+        "You are a helpful agent who can answer user questions about the time and weather in a city."
     ),
-    tools=[google_search],
-    sub_agents=[weather_time_sub_agent],
+    tools=[get_weather, get_current_time],
+    sub_agents=[]
 )
