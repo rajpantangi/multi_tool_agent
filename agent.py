@@ -1,7 +1,7 @@
 import datetime
 from zoneinfo import ZoneInfo
 from google.adk.agents import Agent # type: ignore
-from google.adk.tools import google_search_tool
+from google.adk.tools import google_search
 
 def get_weather(city: str) -> dict:
     """Retrieves the current weather report for a specified city.
@@ -67,6 +67,6 @@ root_agent = Agent(
         " weather in a city, and can also perform Google searches for other"
         " information."
     ),
-    tools=[get_weather, get_current_time, google_search_tool],
+    tools=[get_weather, get_current_time, google_search],
     sub_agents=[]
 )
