@@ -55,18 +55,37 @@ def get_current_time(city: str) -> dict:
     return {"status": "success", "report": report}
 
 
-root_agent = Agent(
-    name="weather_time_agent",
+# A specialized sub-agent for handling weather and time tools.
+weather_time_sub_agent = Agent(
+    name="weather_time_sub_agent",
     model="gemini-1.5-flash-001",
     description=(
-        "Agent to answer questions about the time and weather in a city, and can"
-        " also perform Google searches."
+        "A specialized agent that can get the current weather and time for a"
+        " specific city."
     ),
     instruction=(
-        "You are a helpful agent who can answer user questions about the time and"
-        " weather in a city, and can also perform Google searches for other"
-        " information."
+        "You are a helpful agent that answers user questions about the time and"
+        " weather in a city using your tools."
     ),
-    tools=[get_weather, get_current_time, google_search],
-    sub_agents=[]
+    tools=[get_weather, get_current_time],
+)
+
+# The root agent acts as a coordinator. It uses Google Search for general
+# questions and delegates weather/time questions to its sub-agent.
+root_agent = Agent(
+    name="coordinator_agent",
+    model="gemini-1.5-flash-001",
+    description=(
+        "A coordinator agent that can perform Google searches for general"
+        " information and delegate tasks about weather and time to a specialized"
+        " sub-agent."
+    ),
+    instruction=(
+        "You are a helpful coordinator agent. Your primary role is to route user"
+        " requests. If the user asks a general knowledge question, use the"
+        " google_search tool. If the user asks about the weather or time in a"
+        " city, you MUST delegate the task to the `weather_time_sub_agent`."
+    ),
+    tools=[google_search],
+    sub_agents=[weather_time_sub_agent],
 )
