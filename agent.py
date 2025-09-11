@@ -1,5 +1,7 @@
 import datetime
 from zoneinfo import ZoneInfo
+import subprocess
+import json
 from google.adk.agents import Agent # type: ignore
 
 def get_weather(city: str) -> dict:
@@ -53,16 +55,45 @@ def get_current_time(city: str) -> dict:
     )
     return {"status": "success", "report": report}
 
+def get_current_location() -> dict:
+    """Retrieves the current location (city, region, country) using an external IP lookup service.
+
+    Returns:
+        dict: A dictionary containing the status and location information, or an error message.
+    """
+    try:
+        # Execute the curl command to get the IP information
+        result = subprocess.run(['curl', 'https://ipwho.is/'], capture_output=True, text=True, check=True)
+        
+        # Parse the JSON output
+        data = json.loads(result.stdout)
+
+        # Extract relevant information
+        city = data.get('city', 'Unknown')
+        region = data.get('region', 'Unknown')
+        country = data.get('country', 'Unknown')
+
+        location_string = f"{city}, {region}, {country}"
+        return {"status": "success", "location": location_string}
+
+    except subprocess.CalledProcessError as e:
+        return {"status": "error", "error_message": f"Error executing curl: {e}"}
+    except json.JSONDecodeError:
+        return {"status": "error", "error_message": "Failed to decode JSON from the IP lookup service."}
+    except Exception as e:
+        return {"status": "error", "error_message": f"An unexpected error occurred: {e}"}
+
 
 root_agent = Agent(
     name="weather_time_agent",
     model="gemini-2.0-flash",
     description=(
-        "Agent to answer questions about the time and weather in a city."
+        "Agent to answer general questions and about the time and weather in a city."
     ),
     instruction=(
-        "You are a helpful agent who can answer user questions about the time and weather in a city."
+        "Answer questions using Google Search when needed. Always cite sources. You can use the tools provided for answering any question about weather and time of a particular city." \
+        "If the user asks about his current location use the get_current_location tool to get the current location and return it"
     ),
-    tools=[get_weather, get_current_time],
+    tools=[get_weather, get_current_time, get_current_location],
     sub_agents=[]
 )
