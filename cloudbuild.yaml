@@ -2,6 +2,7 @@ steps:
 # Step 0: Install Python dependencies from your requirements.txt file.
 - name: 'debian:stable'
   id: 'Install Curl'
+  entrypoint: 'apt-get'
   args: ['update', '-y']
 
 - name: 'debian:stable'
