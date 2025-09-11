@@ -1,5 +1,11 @@
 steps:
 # Step 0: Install Python dependencies from your requirements.txt file.
+- name: 'debian:stable'
+  id: 'Install Curl'
+  entrypoint: 'apt-get'
+  args: ['install', '-y', 'curl']
+
+# Step 0: Install Python dependencies from your requirements.txt file.
 - name: 'python:3.13.3-slim'
   id: 'Install Dependencies'
   entrypoint: 'pip'
@@ -75,7 +81,7 @@ steps:
       -H "Content-Type: application/json" \
       -H "X-Goog-User-Project: $PROJECT_ID" \
       -d '{
-        "displayName": "Custom Agent",
+        "displayName": "New Custom Agent",
         "description": "Agent for current location",
         "icon": {
           "uri": "https://www.gstatic.com/marketing-cms/assets/images/3d/24/88d3db994ac296ff541ca1b31674/google-health-studies.webp=s96-fcrop64=1,00000000ffffffff-rw"
