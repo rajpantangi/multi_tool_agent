@@ -1,21 +1,19 @@
 steps:
 # Step 0: Install Python dependencies from your requirements.txt file.
 - name: 'debian:stable'
-  id: 'Install Curl'
-  entrypoint: 'apt-get'
-  args: ['update', '-y']
+  id: 'Update and Install Curl'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - 'apt-get update && apt-get install -y curl'
 
-- name: 'debian:stable'
-  entrypoint: 'apt-get'
-  args: ['install', '-y', 'curl' ]
-
-# Step 0: Install Python dependencies from your requirements.txt file.
+# Step 1: Install Python dependencies from your requirements.txt file.
 - name: 'python:3.13.3-slim'
   id: 'Install Dependencies'
   entrypoint: 'pip'
   args: ['install', '-r', 'requirements.txt', '--user']
 
-# Step 1: Run local evaluation tests before deploying.
+# Step 2: Run local evaluation tests before deploying.
 - name: 'python:3.13.3-slim'
   id: 'Run Local Evaluation'
   entrypoint: 'python'
@@ -25,7 +23,7 @@ steps:
     - 'GOOGLE_CLOUD_STORAGE_BUCKET=gcp-basic-371423-vertex-staging'
   args: ['-m', 'pytest', 'tests/test_local_evaluation.py']
 
-# Step 2: Run your Python script to deploy the agent to Agent Engine and capture the output.
+# Step 3: Run your Python script to deploy the agent to Agent Engine and capture the output.
 - name: 'python:3.13.3-slim'
   id: 'Deploy to AgentEngine'
   entrypoint: 'bash'
@@ -42,7 +40,7 @@ steps:
       awk '{print $4}' > /workspace/reasoning_engine_id.txt
 
 
-# Step 3: Run post-deployment evaluation on the live agent.
+# Step 4: Run post-deployment evaluation on the live agent.
 - name: 'python:3.13.3-slim'
   id: 'Post Deploy Evaluation'
   entrypoint: 'bash'
@@ -62,7 +60,7 @@ steps:
       echo "Running post-deployment evaluation on agent: $$REASONING_ENGINE_ID"
       python PostDeployEvaluation.py
 
-# Step 4: Read the ID from the file and use it to register the agent in Agent Space.
+# Step 5: Read the ID from the file and use it to register the agent in Agent Space.
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
   id: 'Register in AgentSpace'
   entrypoint: 'bash'
