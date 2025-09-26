@@ -20,7 +20,7 @@ steps:
   env:
     - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID'
     - 'GOOGLE_CLOUD_LOCATION=us-central1'
-    - 'GOOGLE_CLOUD_STORAGE_BUCKET=gcp-basic-371423-vertex-staging'
+    - 'GOOGLE_CLOUD_STORAGE_BUCKET=custom-agents-vertex-staging-bucket'
   args: ['-m', 'pytest', 'tests/test_local_evaluation.py']
 
 # Step 3: Run your Python script to deploy the agent to Agent Engine and capture the output.
