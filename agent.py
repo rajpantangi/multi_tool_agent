@@ -62,15 +62,15 @@ def get_current_location() -> dict:
         dict: A dictionary containing the status and location information, or an error message.
     """
     try:
-        # Execute the curl command to get the IP information
-        result = subprocess.run(['curl', 'https://ipwho.is/'], capture_output=True, text=True, check=True)
+        # Execute the curl command to get the IP information from ip-api.com
+        result = subprocess.run(['curl', 'http://ip-api.com/json'], capture_output=True, text=True, check=True)
         
         # Parse the JSON output
         data = json.loads(result.stdout)
 
         # Extract relevant information
         city = data.get('city', 'Unknown')
-        region = data.get('region', 'Unknown')
+        region = data.get('regionName', 'Unknown')
         country = data.get('country', 'Unknown')
 
         location_string = f"{city}, {region}, {country}"
