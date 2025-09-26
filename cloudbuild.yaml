@@ -34,7 +34,7 @@ steps:
       python deploy.py --create \
         --project_id="$PROJECT_ID" \
         --location="us-central1" \
-        --bucket="$GOOGLE_CLOUD_STORAGE_BUCKET" \
+        --bucket="custom-agents-vertex-staging-bucket" \
       2>&1 | tee /dev/stderr | \
       grep 'Created remote agent:' | \
       awk '{print $4}' > /workspace/reasoning_engine_id.txt
@@ -47,7 +47,7 @@ steps:
   env:
     - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID'
     - 'GOOGLE_CLOUD_LOCATION=us-central1'
-    - 'GOOGLE_CLOUD_STORAGE_BUCKET=$GOOGLE_CLOUD_STORAGE_BUCKET'
+    - 'GOOGLE_CLOUD_STORAGE_BUCKET=custom-agents-vertex-staging-bucket'
   args:
     - -c
     - |
