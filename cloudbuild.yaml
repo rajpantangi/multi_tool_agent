@@ -69,7 +69,7 @@ steps:
     - |
       set -eo pipefail
       REASONING_ENGINE_ID=$(cat /workspace/reasoning_engine_id.txt)
-      APP_ID="agentspace-de-agent-testin_1747856989394"
+      APP_ID="customagentstesting_1758854761040"
 
       # A safety check to ensure the ID was actually captured.
       if [ -z "$$REASONING_ENGINE_ID" ]; then
